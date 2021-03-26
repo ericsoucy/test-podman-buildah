@@ -1,0 +1,14 @@
+FROM node:14.15-alpine
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json .
+RUN npm config set registry https://repo.ssqti.ca/repository/npm-ssq
+RUN npm install
+RUN npm install -g @angular/cli@11.2.5
+COPY . .
+#CMD npm start --host=0.0.0.0
+ENV CHOKIDAR_USEPOLLING=true
+CMD ng serve --host=0.0.0.0 --poll 5000
+#docker build -f Dockerfile.local -t podman-angular:dev .
+#docker run -v ${PWD}:/app -v/app/node_modules -p 4200:4200 --rm podman-angular:dev
+#docker run -v %cd%:/app -v/app/node_modules -p 4200:4200 --rm podman-angular:dev
