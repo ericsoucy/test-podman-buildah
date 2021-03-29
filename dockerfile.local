@@ -1,14 +1,27 @@
-FROM node:14.15-alpine
+FROM node:14.16.0-alpine3.13
+RUN sed -i -e 's/v3.13/edge/g' /etc/apk/repositories \
+  && apk add --no-cache python2 build-base git bash openjdk8-jre-base nss chromium-chromedriver chromium \
+  && apk upgrade --no-cache --available
+ENV CHROME_BIN="/usr/bin/chromium-browser"
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json .
-RUN npm config set registry https://repo.ssqti.ca/repository/npm-ssq
+#RUN npm config set registry https://repo.ssqti.ca/repository/npm-ssq
 RUN npm install
 RUN npm install -g @angular/cli@11.2.5
-COPY . .
+#COPY . .
 #CMD npm start --host=0.0.0.0
 ENV CHOKIDAR_USEPOLLING=true
-CMD ng serve --host=0.0.0.0 --poll 5000
+#CMD ng serve --host=0.0.0.0 --poll 5000
+ENV CHROMIUM_USER_FLAGS="--no-sandbox --disable-gpu"
+ENTRYPOINT [ "npm", "run" ]
 #docker build -f Dockerfile.local -t podman-angular:dev .
-#docker run -v ${PWD}:/app -v/app/node_modules -p 4200:4200 --rm podman-angular:dev
+#docker run -v ${PWD}:/app -v /app/node_modules -p 4200:4200 --rm podman-angular:dev
 #docker run -v %cd%:/app -v/app/node_modules -p 4200:4200 --rm podman-angular:dev
+#buildah bud --layers -f dockerfile.local -t podman-angular:dev .
+#podman run -p 4200:4200 --rm  podman-angular:dev
+#podman run -p 4200:4200 --rm  podman-angular:dev test
+#podman run -v ${PWD}:/app -v /app/node_modules --rm podman-angular:dev test-headless
+#podman run -v ${PWD}:/app -v /app/node_modules --rm podman-angular:dev e2e
+#podman run -v ${PWD}:/app -v /app/node_modules --rm podman-angular:dev start
+#https://github.com/sylvaindumont/docker-node-karma-protractor-chrome/tree/alpine-node14

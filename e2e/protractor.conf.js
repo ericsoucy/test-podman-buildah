@@ -13,8 +13,12 @@ exports.config = {
     './src/**/*.e2e-spec.ts'
   ],
   capabilities: {
+    chromeOptions: {
+      args: ["no-sandbox", "headless", "disable-gpu", "-disable-dev-shm-usage" ]
+    },
     browserName: 'chrome'
   },
+  chromeDriver: '/usr/bin/chromedriver',
   directConnect: true,
   SELENIUM_PROMISE_MANAGER: false,
   baseUrl: 'http://localhost:4200/',
